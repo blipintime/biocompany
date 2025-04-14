@@ -114,3 +114,22 @@ docker-compose down
 - Express
 - Node.js
 - Docker 
+
+
+### Sample screenshots
+
+
+Home page
+
+<img src="homeimage.png" alt="Alt text" width="500">
+
+
+The dashboard (/dashboard for the current user)
+
+<img src="dashboardimage.png" alt="Alt text" width="500">
+
+
+The short URL page (to track and redirect)
+
+<img src="shorturlimage.png" alt="Alt text" width="500">
+
