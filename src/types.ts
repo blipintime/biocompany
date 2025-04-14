@@ -8,4 +8,8 @@ export interface Compound {
 export interface SiteData {
   url: string
   visitCount: number
+}
+
+export interface SiteVisitMap {
+  [key: string]: number
 } 

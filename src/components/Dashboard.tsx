@@ -1,8 +1,14 @@
 import { useState, useEffect, useTransition } from 'react'
-import { SiteData } from '../types'
+
+export interface SiteVisitMap {
+  [key: string]: number
+} 
+
+const USERS = ['John', 'Mary', 'Gary']
 
 const Dashboard: React.FC = () => {
-  const [siteData, setSiteData] = useState<SiteData[]>([])
+  const [currentUser, setCurrentUser] = useState(USERS[2])
+  const [siteData, setSiteData] = useState<SiteVisitMap>({})
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -10,7 +16,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch('/api/dashboard')
+        const response = await fetch(`/api/dashboard?user=${currentUser}`)
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard data')
         }
@@ -48,7 +54,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Site Visit Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">{currentUser}'s Site Visit Dashboard</h1>
       
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white">
