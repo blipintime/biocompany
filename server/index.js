@@ -158,9 +158,9 @@ app.get('/api/dashboard', (req, res) => {
 });
 
 // POST create a new short URL
-app.post('/shorturls', (req, res) => {
+app.post('/api/shorturls', (req, res) => {
   const referer = req.get('referer') || req.get('referrer')
-  console.log('/shorturls POST referer', referer)
+  console.log('/api/shorturls POST referer', referer)
   const { url, user } = req.body
   const slugRoot = process.env.SLUG_ROOT || ''
   let shortURL
@@ -177,7 +177,7 @@ app.post('/shorturls', (req, res) => {
   res.json({
     shortURL
   })
-  console.log('/shorturls POST data', url, 'returning', shortURL)
+  console.log('/api/shorturls POST returning', shortURL)
 })
 
 // increment visit

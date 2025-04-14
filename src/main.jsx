@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App'
-import CompoundList from './components/CompoundList'
+import UrlShortener from './components/UrlShortener'
 import Dashboard from './components/Dashboard'
 import CatchAll from './components/CatchAll'
 import './index.css'
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <CompoundList />,
+        element: <UrlShortener />,
       },
       {
         path: "dashboard",
