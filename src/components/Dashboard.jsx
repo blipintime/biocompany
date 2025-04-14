@@ -1,15 +1,18 @@
 import { useState, useEffect, useTransition } from 'react'
 
+const USERS = ['John', 'Mary', 'Gary']
+
 function Dashboard() {
   const [siteData, setSiteData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isPending, startTransition] = useTransition()
+  const [currentUser, setCurrentUser] = useState(USERS[2])
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch('/api/dashboard')
+        const response = await fetch(`/api/dashboard?user=${currentUser}`)
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard data')
         }
@@ -58,10 +61,10 @@ function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {siteData.map((site) => (
-              <tr key={site.url} className="border-b hover:bg-gray-50">
-                <td className="py-3 px-4">{site.url}</td>
-                <td className="py-3 px-4 text-right font-medium">{site.visitCount}</td>
+            {Object.keys(siteData).map((site, idx) => (
+              <tr key={idx} className="border-b hover:bg-gray-50">
+                <td className="py-3 px-4">{site}</td>
+                <td className="py-3 px-4 text-right font-medium">{siteData[site]}</td>
               </tr>
             ))}
           </tbody>

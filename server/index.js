@@ -20,6 +20,56 @@ const limiter = rateLimit({
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+function initDb() {
+  
+  const visits = {'abc': 15, 'xyz': 20} // keys are the short URL, values are the number of hits
+  const urlMap = {} // could use Map
+  const userUrls = {} // could use Map
+  
+  console.log('--->database ready')
+
+  return {
+    insert(url, shortURL, userName) {
+      urlMap[url] = shortURL
+
+      userUrls[userName] ??= []
+      userUrls[userName].push(url)
+      console.log('DB ', url, ' to ', shortURL, `user's urls`, userUrls)
+    },
+
+    isMapped(url) {
+      return url in urlMap
+    },
+
+    hasShortUrl(shortURL) {
+      console.log('DB hasShortUrl values', Object.values(urlMap))
+      return Object.values(urlMap).includes(shortURL)
+    },
+
+    retrieveLongUrl(shortURL) {
+      return Object.keys(urlMap).find(key => urlMap[key] === shortURL)
+    },
+
+    lookup(url) {
+      return urlMap[url]
+    },
+
+    incrementVisit(url) {
+      visits[url] ??= 0
+      visits[url]++
+      console.log('DB ', url, ' ', visits[url], ' visits')
+    },
+
+    retrieveStats(user) {
+      console.log('DB retrieveStats user', user)
+      // todo: implement filtering by user
+      return {...visits}
+    }
+  }
+}
+
+const db = initDb()
+
 const app = express()
 const port = 3001
 
@@ -97,8 +147,54 @@ app.get('/api/compounds', (req, res) => {
 })
 
 // API endpoint to get dashboard data
-app.get('/api/dashboard', (req, res) => {
+app.get('/api/dashboard__old', (req, res) => {
   res.json(dashboardData)
+})
+
+app.get('/api/dashboard', (req, res) => {
+  const { user } = req.query
+  console.log('/shorturls GET user', req.query.user, db.retrieveStats(user))
+  res.json(db.retrieveStats(req.query.user))
+});
+
+// POST create a new short URL
+app.post('/shorturls', (req, res) => {
+  const referer = req.get('referer') || req.get('referrer')
+  console.log('/shorturls POST referer', referer)
+  const { url, user } = req.body
+  const slugRoot = process.env.SLUG_ROOT || ''
+  let shortURL
+  
+  if (db.isMapped(url)) {
+    shortURL = db.lookup(url)
+  } else {
+    // generate fake short URL
+    shortURL = `${referer}${slugRoot}${Math.random().toString(36).substring(7)}`
+    // todo: check if unique before inserting
+    db.insert(url, shortURL, user)
+  }
+
+  res.json({
+    shortURL
+  })
+  console.log('/shorturls POST data', url, 'returning', shortURL)
+})
+
+// increment visit
+app.post('/shorturls/track', (req, res) => {
+  const pathname = req.body.pathname
+  const fullPath = ROOT + pathname
+  console.log('/shorturls/track POST fullPath', fullPath)
+  if (db.hasShortUrl(fullPath)) {
+    db.incrementVisit(fullPath)
+    const longURL = db.retrieveLongUrl(fullPath)
+    res.json({notFound: false, longURL})
+    console.log('/shorturls/track POST returning', {notFound: false, longURL})
+  } else {
+    // or: res.redirect(status, path); 300, 301, etc.
+    // res.redirect('/notfound');
+    res.json({notFound: true}) 
+  }
 })
 
 // Serve static files from the dist directory
