@@ -1,4 +1,4 @@
-import { useEffect,useRef, useState } from 'react'
+import React, { useEffect,useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const CatchAll: React.FC = () => {

@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { Link } from 'react-router-dom'
 
 const Navbar: React.FC = () => {
@@ -7,7 +9,7 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold text-gray-800">
-              Chemical Compounds
+              URL Shortener
             </Link>
           </div>
           <div className="flex space-x-4">
@@ -15,7 +17,7 @@ const Navbar: React.FC = () => {
               to="/" 
               className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
             >
-              Compounds
+              URL Shortener
             </Link>
             <Link 
               to="/dashboard" 
