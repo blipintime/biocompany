@@ -1,4 +1,4 @@
-import { useState, useEffect, useTransition } from 'react'
+import { useState, useEffect, useRef, useTransition } from 'react'
 
 export interface SiteVisitMap {
   [key: string]: number
@@ -12,9 +12,12 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const isInitialized = useRef(false)
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      if (isInitialized.current) return
+      isInitialized.current = true
       try {
         const response = await fetch(`/api/dashboard?user=${currentUser}`)
         if (!response.ok) {

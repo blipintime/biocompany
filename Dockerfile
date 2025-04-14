@@ -12,8 +12,11 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the frontend
+RUN npm run build:frontend
+
+# Build the server
+RUN npm run build:server
 
 # Production stage
 FROM node:20-alpine

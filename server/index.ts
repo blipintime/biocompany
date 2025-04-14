@@ -20,16 +20,25 @@ const limiter = rateLimit({
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-function initDb() {
-  
-  const visits = {} // keys are the short URL, values are the number of hits
-  const urlMap = {} // could use Map
-  const userUrls = {} // could use Map
+interface Database {
+  insert(url: string, shortURL: string, userName: string): void;
+  isMapped(url: string): boolean;
+  hasShortUrl(shortURL: string): boolean;
+  retrieveLongUrl(shortURL: string): string | undefined;
+  lookup(url: string): string | undefined;
+  incrementVisit(url: string): void;
+  retrieveStats(user: string): Record<string, number>;
+}
+
+function initDb(): Database {
+  const visits: Record<string, number> = {} // keys are the short URL, values are the number of hits
+  const urlMap: Record<string, string> = {} // could use Map
+  const userUrls: Record<string, string[]> = {} // could use Map
   
   console.log('--->database ready')
 
   return {
-    insert(url, shortURL, userName) {
+    insert(url: string, shortURL: string, userName: string) {
       urlMap[url] = shortURL
 
       userUrls[userName] ??= []
@@ -37,30 +46,30 @@ function initDb() {
       console.log('DB ', url, ' to ', shortURL, `user's urls`, userUrls)
     },
 
-    isMapped(url) {
+    isMapped(url: string) {
       return url in urlMap
     },
 
-    hasShortUrl(shortURL) {
+    hasShortUrl(shortURL: string) {
       console.log('DB hasShortUrl values', Object.values(urlMap))
       return Object.values(urlMap).includes(shortURL)
     },
 
-    retrieveLongUrl(shortURL) {
+    retrieveLongUrl(shortURL: string) {
       return Object.keys(urlMap).find(key => urlMap[key] === shortURL)
     },
 
-    lookup(url) {
+    lookup(url: string) {
       return urlMap[url]
     },
 
-    incrementVisit(url) {
+    incrementVisit(url: string) {
       visits[url] ??= 0
       visits[url]++
       console.log('DB ', url, ' ', visits[url], ' visits')
     },
 
-    retrieveStats(user) {
+    retrieveStats(user: string) {
       console.log('DB retrieveStats user', user)
       // todo: implement filtering by user
       return {...visits}
@@ -71,18 +80,17 @@ function initDb() {
 const db = initDb()
 
 const app = express()
-const port = 3001
+const port = process.env.PORT || 3001
 
 app.use(cors())
 app.use(express.json())
 app.use(limiter)
 
-
 // API endpoint to get dashboard data
 app.get('/api/dashboard', (req, res) => {
   const { user } = req.query
-  console.log('/shorturls GET user', req.query.user, db.retrieveStats(user))
-  res.json(db.retrieveStats(req.query.user))
+  console.log('/shorturls GET user', req.query.user, db.retrieveStats(user as string))
+  res.json(db.retrieveStats(user as string))
 });
 
 // POST create a new short URL

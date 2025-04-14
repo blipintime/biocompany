@@ -1,10 +1,11 @@
 {
-  "compilerOptions": {
-    "composite": true,
-    "skipLibCheck": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+  "extends": "./tsconfig.json",
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   },
-  "include": ["vite.config.ts"]
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node"
+  }
 } 

@@ -1,6 +1,6 @@
-# Chemical Compounds Web Application
+# URL Shortener Web Application
 
-A modern web application built with React 19, React Router 7, Vite, and Express that displays chemical compounds.
+A modern web application built with React 19, React Router 7, Vite, and Express that shortens URLs.
 
 ## Features
 
@@ -9,7 +9,6 @@ A modern web application built with React 19, React Router 7, Vite, and Express 
 - Tailwind CSS for styling
 - Express backend API
 - Responsive design
-- Sample chemical compounds data
 
 ## Prerequisites
 
@@ -60,7 +59,7 @@ npm start
 To build the Docker image:
 
 ```bash
-docker build -t chemical-compounds-app .
+docker build -t url-shortener-app .
 ```
 
 ### Running with Docker
@@ -68,7 +67,7 @@ docker build -t chemical-compounds-app .
 To run the application using Docker:
 
 ```bash
-docker run -p 3001:3001 chemical-compounds-app
+docker run -p 3001:3001 url-shortener-app
 ```
 
 ### Using Docker Compose
