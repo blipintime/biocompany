@@ -28,7 +28,6 @@ RUN npm install --production
 
 # Copy built files from build stage
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/server ./server
 
 # Expose the port the app runs on
 EXPOSE 3001

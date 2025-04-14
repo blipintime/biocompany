@@ -1,5 +1,5 @@
 import { useState } from 'react'
-//import type { ChangeEvent } from 'react'
+import type { ChangeEvent } from 'react'
 
 const USERS = ['John', 'Mary', 'Gary']
 
@@ -21,7 +21,7 @@ export default function() {
   const [currentUser, setCurrentUser] = useState(USERS[2])
   const [invalidURL, setInvalidURL] = useState(false)
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUrlToShorten(event.target.value);
   };
 

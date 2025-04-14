@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Navbar from './components/Navbar'
 
-function App() {
+const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />

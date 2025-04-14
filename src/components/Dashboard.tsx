@@ -1,18 +1,16 @@
 import { useState, useEffect, useTransition } from 'react'
+import { SiteData } from '../types'
 
-const USERS = ['John', 'Mary', 'Gary']
-
-function Dashboard() {
-  const [siteData, setSiteData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+const Dashboard: React.FC = () => {
+  const [siteData, setSiteData] = useState<SiteData[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
-  const [currentUser, setCurrentUser] = useState(USERS[2])
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch(`/api/dashboard?user=${currentUser}`)
+        const response = await fetch('/api/dashboard')
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard data')
         }
@@ -24,7 +22,7 @@ function Dashboard() {
           setLoading(false)
         })
       } catch (err) {
-        setError(err.message)
+        setError(err instanceof Error ? err.message : 'An unknown error occurred')
         setLoading(false)
       }
     }
