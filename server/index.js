@@ -22,7 +22,7 @@ const __dirname = dirname(__filename)
 
 function initDb() {
   
-  const visits = {'abc': 15, 'xyz': 20} // keys are the short URL, values are the number of hits
+  const visits = {} // keys are the short URL, values are the number of hits
   const urlMap = {} // could use Map
   const userUrls = {} // could use Map
   
@@ -77,80 +77,8 @@ app.use(cors())
 app.use(express.json())
 app.use(limiter)
 
-// Sample chemical compounds data
-const compounds = [
-  {
-    id: 1,
-    name: 'Water',
-    formula: 'H₂O',
-    molecularWeight: 18.015
-  },
-  {
-    id: 2,
-    name: 'Carbon Dioxide',
-    formula: 'CO₂',
-    molecularWeight: 44.009
-  },
-  {
-    id: 3,
-    name: 'Glucose',
-    formula: 'C₆H₁₂O₆',
-    molecularWeight: 180.156
-  },
-  {
-    id: 4,
-    name: 'Ethanol',
-    formula: 'C₂H₅OH',
-    molecularWeight: 46.068
-  },
-  {
-    id: 5,
-    name: 'Sodium Chloride',
-    formula: 'NaCl',
-    molecularWeight: 58.443
-  },
-  {
-    id: 6,
-    name: 'Sulfuric Acid',
-    formula: 'H₂SO₄',
-    molecularWeight: 98.079
-  }
-]
-
-// Sample dashboard data
-const dashboardData = [
-  {
-    url: 'www.yahoo.com',
-    visitCount: 15
-  },
-  {
-    url: 'www.cisco.com',
-    visitCount: 29
-  },
-  {
-    url: 'www.google.com',
-    visitCount: 42
-  },
-  {
-    url: 'www.microsoft.com',
-    visitCount: 18
-  },
-  {
-    url: 'www.amazon.com',
-    visitCount: 37
-  }
-]
-
-// API endpoint to get all compounds
-app.get('/api/compounds', (req, res) => {
-  res.json(compounds)
-})
 
 // API endpoint to get dashboard data
-app.get('/api/dashboard__old', (req, res) => {
-  res.json(dashboardData)
-})
-
 app.get('/api/dashboard', (req, res) => {
   const { user } = req.query
   console.log('/shorturls GET user', req.query.user, db.retrieveStats(user))
@@ -181,13 +109,12 @@ app.post('/api/shorturls', (req, res) => {
 })
 
 // increment visit
-app.post('/shorturls/track', (req, res) => {
-  const pathname = req.body.pathname
-  const fullPath = ROOT + pathname
-  console.log('/shorturls/track POST fullPath', fullPath)
-  if (db.hasShortUrl(fullPath)) {
-    db.incrementVisit(fullPath)
-    const longURL = db.retrieveLongUrl(fullPath)
+app.post('/api/shorturls/track', (req, res) => {
+  const absoluteURL = req.body.absoluteURL
+  console.log('/shorturls/track POST absoluteURL', absoluteURL)
+  if (db.hasShortUrl(absoluteURL)) {
+    db.incrementVisit(absoluteURL)
+    const longURL = db.retrieveLongUrl(absoluteURL)
     res.json({notFound: false, longURL})
     console.log('/shorturls/track POST returning', {notFound: false, longURL})
   } else {
