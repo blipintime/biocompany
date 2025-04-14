@@ -1,7 +1,21 @@
 import express from 'express'
+import rateLimit from 'express-rate-limit'
+import dotenv from 'dotenv'
 import cors from 'cors'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+
+dotenv.config()
+
+console.log('--->server dotenv SLUG ROOT', process.env.SLUG_ROOT)
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again after 15 minutes',
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  })
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -11,6 +25,7 @@ const port = 3001
 
 app.use(cors())
 app.use(express.json())
+app.use(limiter)
 
 // Sample chemical compounds data
 const compounds = [
